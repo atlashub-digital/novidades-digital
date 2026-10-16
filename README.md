@@ -1,54 +1,59 @@
-# Novidades Digital
+# Novidades Digital — Deprecated Runtime / Migration Source
 
-Aplicação de produtos digitais do ecossistema **Novidades.store**.
+> **Status: DEPRECATED AS AN INDEPENDENT APPLICATION**
 
-## Produção
+The canonical Novidades.Store application is now:
 
-- Discovery: `https://novidades.store/conteudos-digitais`
-- Venda, ferramentas e entrega: `https://digital.novidades.store`
-- Checkout: `https://checkout.xpayments.digital`
+`atlashub-digital/novidades-platform`
 
-## Release 1
+This repository is retained as a **migration source and historical implementation record**. It must not become a second production customer journey for the same Novidades catalog.
 
-**Conversion Content OS — R$97, pagamento único**
+## Why this repository existed
 
-Pacote — 8 componentes digitais:
-1. Conversion Content OS — Guide
-2. Conversion Workbook
-3. Hook Library — 300 estruturas
-4. Prompt Library — 36 prompts
-5. CTA & Offer Swipe File
-6. Content Repurposing Matrix
-7. Quick Start
-8. Customer License & Terms
+The original architecture correctly proposed splitting digital delivery when the digital surface became independently deployable with:
+- authenticated customer library;
+- interactive tools;
+- protected delivery;
+- heavy media/course player;
+- independent release cadence.
 
-O Hook Lab Beta é uma camada executável complementar. O pacote pago não depende do software para cumprir a oferta da Release 1.
+That condition occurred and this application was created.
 
-## Runtime
+The product strategy has since changed: **Novidades.Store itself is now digital-first**. Keeping a separate `novidades-digital` runtime would duplicate:
+- product registry;
+- checkout;
+- payment state;
+- entitlement;
+- customer access;
+- delivery;
+- release governance.
 
-```bash
-bun install
-cp .env.example .env.local
-bun run dev
-```
+Therefore the application boundary is being collapsed back into the canonical Novidades platform.
 
-Para checkout real:
+## What is useful here
 
-```bash
-XPAYMENTS_API_KEY=<api-key-live-da-store-NOVIDADES-BRL>
-```
+Migration candidates:
+- protected-delivery patterns;
+- digital asset metadata;
+- entitlement-aware UI concepts;
+- checkout intent history/schema as migration evidence;
+- online content release patterns;
+- product packaging lessons.
 
-A API key é exclusivamente server-side. Preço, moeda e SKU são resolvidos pelo registry interno; o browser nunca define o valor cobrado.
+## What must not be copied as target architecture
 
-## Storage
+- direct XPAYMENTS integration;
+- project-owned XPAYMENTS webhook;
+- local payment-status authority;
+- local entitlement authority;
+- claim-token/localStorage as the final customer identity model;
+- duplicate hard-coded product registry;
+- duplicate static GitHub Pages deployment.
 
-GitHub **não** é storage de entrega ao cliente. PDFs, ZIPs, planilhas e mídia ficam em object storage privado e são liberados por entitlement + URL assinada.
+ARO is the target authority for checkout, order, payment state and entitlement.
 
-## Segurança
+## Migration
 
-Não colocar em variáveis `NEXT_PUBLIC_*`:
-- XPAYMENTS API key
-- Supabase service-role key
-- tokens ou segredos de providers
+See `MIGRATION.md`.
 
-Consulte `docs/ARCHITECTURE.md`.
+No production deployment, DNS change or real payment is authorized from this branch.
